@@ -45,17 +45,33 @@ const Row = styled(motion.div)`
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
   width: 100%;
-  overflow-x: hidden;
-  margin-bottom: 1000px ;
 `;
 const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-color: white;
   height: 200px;
-  font-size: 66px;
+  font-size: 30px;
+  text-align: center ;
   background-image: url(${(props) => props.bgPhoto}) ;
   background-position: center center;
   background-size: cover;
-  border-radius: 10px ;
+  &:first-child {
+    transform-origin: center left ;
+  }
+  &:last-child {
+    transform-origin: center right ;
+  }
+`;
+const Info = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
 `;
 
 const rowVariants = {
@@ -69,6 +85,32 @@ const rowVariants = {
     x: -window.outerWidth - 10,
   },
 };
+const boxVariants = {
+    normal: {
+      scale: 1,
+    },
+    hover: {
+      scale: 1.3,
+      borderRadius : "10px",
+      y: -80,
+      transition: {
+        delay: 0.5,
+        duaration: 0.1,
+        type: "tween",
+      },
+    },
+  };
+  const infoVariants = {
+    hover: {
+      opacity: 1,
+      transition: {
+        delay: 0.5,
+        duaration: 0.1,
+        type: "tween",
+      },
+    },
+  };
+
 const offset = 6;
 function Home() {
     const { data, isLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
@@ -110,7 +152,15 @@ function Home() {
                                 <Box
                                 key={movie.id}
                                 bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
-                                />
+                                variants = {boxVariants}
+                                whileHover = "hover"
+                                initial = "normal"
+                                >
+
+                                    <Info variants={infoVariants}>
+                                        {movie.title}
+                                    </Info>
+                                </Box>
                             ))}
                     </Row>
                 </AnimatePresence>
