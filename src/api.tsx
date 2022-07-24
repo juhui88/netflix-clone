@@ -26,3 +26,7 @@ export interface IGetMoviesResult {
 export function getMovies() {
   return axios.get(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(res => res.data);
 }
+
+export function getMovie(movieId:string) {
+    return axios.get(`${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}`).then(res => res.data);
+}
