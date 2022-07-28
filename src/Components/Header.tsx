@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from "styled-components";
 import { motion, useAnimation, useViewportScroll} from 'framer-motion';
-import { Link, useMatch } from 'react-router-dom';
+import { Link, useMatch, useNavigate } from 'react-router-dom';
+import {useForm} from "react-hook-form";
 
 const Nav = styled(motion.nav)`
     display: flex;
@@ -58,7 +59,7 @@ const Circle = styled(motion.span)`
     right: 50%;
     bottom: -12px;
 `;
-const Search = styled(motion.span)`
+const Search = styled(motion.form)`
     display: flex;
     align-items:center;
     color: ${(props) => props.theme.white.darker};
@@ -92,6 +93,10 @@ const logoVari = {
         },
     }
 }
+
+interface IForm {
+    keyword: string;
+}
 function Header() {
     const [searchOpen, setSearchOpen] = useState(false);
     const homeMatch = useMatch("");
@@ -103,6 +108,8 @@ function Header() {
     }
 
     const {scrollY} = useViewportScroll();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         scrollY.onChange(() => {
@@ -116,9 +123,12 @@ function Header() {
             });
           }
         });
-      }, [scrollY, navAnimation]);
+    }, [scrollY, navAnimation]);
 
-
+    const { register, handleSubmit } = useForm<IForm>();
+    const onValid = (data:IForm) => {
+        navigate(`/search?keyword=${data.keyword}`)
+    }
     return (
         <Nav 
             initial = {{backgroundColor : "rgba(0,0,0,0)"}}
@@ -154,7 +164,9 @@ function Header() {
                 </Items>
             </Col>
             <Col>
-                <Search initial = {{}} animate = {{}}>
+                <Search
+                onSubmit= {handleSubmit(onValid)}
+                >
                     <Span 
                         onClick={toggleSearch}
                         animate = {{
@@ -166,6 +178,7 @@ function Header() {
                         🔍︎
                     </Span>
                     <Input 
+                        {...register("keyword", { required: true, minLength: 2 })}
                         placeholder='Search for movie or tv shows'
                         initial = {{scaleX:0}}
                         animate = {{scaleX : searchOpen? 1: 0 ,
