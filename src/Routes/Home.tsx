@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getNowPlayingMovies, getPopularMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult, IMovie } from "../api";
+import { getNowPlayingMovies, getPopularMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 import {AnimatePresence, motion, useViewportScroll} from 'framer-motion';
 import { useEffect, useState } from "react";
@@ -19,12 +19,13 @@ const Loader = styled.div`
     align-items: center ;
 `
 const Bannner = styled.div<{bgphoto: string}>`
-  height:80vh ;
+    height:100vh ;
+    width:100vw;
     display: flex; 
     flex-direction: column ;
     justify-content: center ;
     padding: 60px;
-    background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5)), url(${(props) => props.bgphoto}) ;
+    background-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)), url(${(props) => props.bgphoto}) ;
     background-size: cover ;
 `
 const Title = styled.h2`
@@ -37,20 +38,9 @@ const OverView = styled.p`
     width: 40%;
 `
 const Sliders = styled.div`
-  
+  position: relative;
+  top: -100px;
 `
-const Info = styled(motion.div)`
-  padding: 10px;
-  background-color: ${(props) => props.theme.black.lighter};
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  h4 {
-    text-align: center;
-    font-size: 18px;
-  }
-`;
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -94,29 +84,6 @@ const BigOverview = styled.p`
 
 
 
-
-const rowVariants = {
-  hidden: (back:boolean)=> ({
-    x: back ? -window.outerWidth - 10 :  window.outerWidth + 10,
-  }),
-  visible: {
-    x: 0,
-  },
-  exit:(back:boolean)=> ( {
-    x: back ? window.outerWidth + 10 :  -window.outerWidth - 10,
-  }),
-};
-
-const infoVariants = {
-    hover: {
-      opacity: 1,
-      transition: {
-        delay: 0.5,
-        duaration: 0.1,
-        type: "tween",
-      },
-    },
-  };
 const boxVariants = {
   normal: {
     scale: 1,
@@ -153,16 +120,16 @@ return (
     <Sliders>
       <Slider
       title="Now Playing Movies"
-      data={nowPlayingData?.results ?? []}/>
+      movieData={nowPlayingData?.results ?? []}/>
       <Slider
       title="Popular Movies"
-      data={popularData?.results ?? []}/>
+      movieData={popularData?.results ?? []}/>
       <Slider 
       title="Top Rated Movies"
-      data={topRatedData?.results ?? []}/>
+      movieData={topRatedData?.results ?? []}/>
       <Slider
       title="Upcoming Movies"
-      data={upcomingData?.results ?? []}/>
+      movieData={upcomingData?.results ?? []}/>
     </Sliders>
       
   </>
