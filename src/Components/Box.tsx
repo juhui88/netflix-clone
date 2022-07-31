@@ -1,0 +1,134 @@
+import styled from "styled-components";
+import { AnimatePresence, motion } from "framer-motion";
+import { makeImagePath } from "../utils";
+import {RiPlayCircleLine, RiInformationLine} from 'react-icons/ri'
+import {TbThumbUp} from 'react-icons/tb'
+import {TiHeartFullOutline} from 'react-icons/ti'
+
+
+const Wrap = styled(motion.div)<{ bgphoto: string }>`
+    justify-self: center;
+  background-color: white;
+  height: 200px;
+  width: 260px;
+  background-image: url(${(props) => props.bgphoto}) ;
+  background-position: center center;
+  background-size: cover;
+  border-radius: 5px ;
+  &:first-child {
+    transform-origin: center left ;
+  }
+  &:last-child {
+    transform-origin: center right ;
+  }
+`;
+const Info = styled(motion.div)`
+  padding: 10px;
+  color:${(props)=>props.theme.white.lighter};
+  background-color: rgba(1,1,1,0.7);
+  font-size: 15px;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  border-radius:5px ;
+  
+  h4 {
+    text-align: center;
+    font-size: 18px;
+    font-weight:bold;
+    margin:15px;
+  }
+`
+const InfoDetail = styled.div`
+  display:flex;
+  justify-content: space-between;
+`
+const InfoIcons = styled(InfoDetail)`
+  font-size:25px;
+  div:last-child {
+    cursor:pointer
+  }
+`
+
+const boxVariants = {
+    normal: {
+      scale: 1,
+    },
+    hover: {
+      scale: 1.3,
+      y: -80,
+      transition: {
+        delay: 0.5,
+        duaration: 0.1,
+      },
+      
+    },
+  };
+  const infoVariants = {
+    hover: {
+      opacity: 1,
+      transition: {
+        delay: 0.5,
+        duaration: 0.1,
+        type: "tween",
+      },
+    },
+    
+  };
+
+interface IBox {
+    id : number,
+    backdropPath : string,
+    title: string,
+    adult: boolean,
+    releaseDate: string
+}
+function Box({id, backdropPath, title, adult, releaseDate} : IBox) {
+
+    return (
+        <Wrap
+            key={id}
+            bgphoto={makeImagePath(backdropPath, "w500")}
+            variants={boxVariants}
+            whileHover="hover"
+            initial="normal"
+            transition={{ type: "tween" }}
+            >
+                <Info
+                variants={infoVariants}
+                >
+                <InfoIcons>
+                    <div>
+                    <span>
+                    <RiPlayCircleLine/>
+                    </span>
+                    <span>
+                    <TbThumbUp/>
+                    </span>
+                    <span >
+                    <TiHeartFullOutline/> 
+                    </span>
+                    </div>
+                    <div>
+                    <span>
+                        <RiInformationLine/>
+                    </span>
+                    </div>
+                </InfoIcons>
+                <h4>{title}</h4>
+                <InfoDetail>
+                    <span>
+                    {adult ? "청소년 관람 불가능" : "청소년 관람 가능"}
+                    </span>
+                    <span>
+                    {releaseDate}
+                    </span>
+                </InfoDetail>
+                </Info>
+            </Wrap>
+
+    )
+}
+
+export default Box;
