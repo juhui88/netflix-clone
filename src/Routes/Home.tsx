@@ -82,28 +82,6 @@ const BigOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
 `;
 
-
-
-const boxVariants = {
-  normal: {
-    scale: 1,
-  },
-  hover: {
-    scale: 1.3,
-    y: -80,
-    transition: {
-      delay: 0.5,
-      duaration: 0.1,
-      type: "tween",
-    },
-  },
-};
-const btnVariants = {
-  hover: {
-    scale:1.2,
-  }
-}
-
 function Home() {
   const { data:nowPlayingData, isLoading:nowPlayingLoading } = useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getNowPlayingMovies);
   const { data:popularData, isLoading:popularLoding } = useQuery<IGetMoviesResult>(["movies", "popular"], getPopularMovies);

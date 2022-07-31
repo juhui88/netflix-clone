@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IGetGenres, IMovie } from "../api";
 import { makeImagePath } from "../utils";
@@ -19,16 +19,19 @@ const SliderTitle = styled.div`
   margin-bottom: 10px;
   font-weight:bold ;
 `
-const Row = styled(motion.div)`
+const Row = styled(motion.div)<{offset: number}>`
   display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(6,1fr);
+  grid-template-columns: repeat(${(props) => props.offset},1fr);
   position: absolute;
+  gap:10px;
   width: 100%;
+  
 `;
 const Box = styled(motion.div)<{ bgphoto: string }>`
+justify-self: center;
   background-color: white;
   height: 200px;
+  width: 260px;
   background-image: url(${(props) => props.bgphoto}) ;
   background-position: center center;
   background-size: cover;
@@ -43,7 +46,7 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
 const Prev = styled(motion.button)`
   position: absolute ;
   background:rgba(0,0,0,0);
-  height:200px;
+  height:18vh;
   font-size:40px;
   color: white;
   z-index: 1;
@@ -120,8 +123,6 @@ const infoVariants = {
   
 };
 
-
-const offset = 6;
 interface SlidersProps {
   title?: string;
   movieData: IMovie[];
@@ -130,7 +131,22 @@ function Slider({title, movieData }: SlidersProps) {
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
     const [back, setBack] = useState(false);
+    const [offset, setOffset] = useState(6);
 
+    const handleResize = () => {
+      if (window.outerWidth > 1400) {
+        setOffset(6)
+      } else if( window.outerWidth > 1100) {
+        setOffset(5)
+      } else if (window.outerWidth > 800) {
+        setOffset(4)
+      } else {
+        setOffset(3)
+      }
+    }
+    useEffect(()=> {
+      window.addEventListener('resize', handleResize)
+    }, [])
 
   const increaseIndex = () => {
     if (movieData) {
@@ -162,7 +178,7 @@ function Slider({title, movieData }: SlidersProps) {
             </SliderTitle>
             <AnimatePresence custom = {back} initial = {false} onExitComplete={toggleLeaving}>
                 {/* 맨 처음에는 애니 작동 x */}
-            <Row
+            <Row offset = {offset}
                 variants={rowVariants}
                 initial="hidden"
                 animate="visible"
@@ -198,7 +214,6 @@ function Slider({title, movieData }: SlidersProps) {
                                 <TiHeartFullOutline/> 
                               </span>
                               </div>
-                              
                               <div>
                                 <span>
                                   <RiInformationLine/>
@@ -218,7 +233,7 @@ function Slider({title, movieData }: SlidersProps) {
                         </Box>
                     ))}
             </Row>
-            <Prev onClick = {increaseIndex} whileHover = {{scale:1.2}} key = "increase"><BiArrowFromRight/></Prev>
+            <Prev onClick = {increaseIndex} whileHover = {{scale:1.2}} key = "increase"><BiArrowFromRight /></Prev>
             <Next onClick = {decreaseIndex} whileHover = {{scale:1.2}} key = "decrease"><BiArrowFromLeft/></Next>
             </AnimatePresence>
         </SliderWrap>
