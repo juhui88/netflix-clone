@@ -4,6 +4,9 @@ import { makeImagePath } from "../utils";
 import {RiPlayCircleLine, RiInformationLine} from 'react-icons/ri'
 import {TbThumbUp} from 'react-icons/tb'
 import {TiHeartFullOutline} from 'react-icons/ti'
+import { useNavigate } from "react-router-dom";
+import {movieIdState } from "../atom";
+import { useRecoilState } from "recoil";
 
 
 const Wrap = styled(motion.div)<{ bgphoto: string }>`
@@ -43,10 +46,15 @@ const Info = styled(motion.div)`
 const InfoDetail = styled.div`
   display:flex;
   justify-content: space-between;
+  font-size: 12px;
 `
 const InfoIcons = styled(InfoDetail)`
   font-size:25px;
+  
   div:last-child {
+    a{
+        color: ${props=> props.theme.white.lighter};
+    }
     cursor:pointer
   }
 `
@@ -85,8 +93,15 @@ interface IBox {
     releaseDate: string
 }
 function Box({id, backdropPath, title, adult, releaseDate} : IBox) {
-
+    const [MId,setMId] = useRecoilState(movieIdState)
+    
+    const navigate = useNavigate();
+    const onInfoClicked = (movieId: number) => {
+        navigate(`${movieId}`);
+        setMId(movieId);
+      };
     return (
+      <AnimatePresence>
         <Wrap
             key={id}
             bgphoto={makeImagePath(backdropPath, "w500")}
@@ -110,23 +125,25 @@ function Box({id, backdropPath, title, adult, releaseDate} : IBox) {
                     <TiHeartFullOutline/> 
                     </span>
                     </div>
-                    <div>
-                    <span>
+                    <div onClick = {() => onInfoClicked(id)} >
+                        <span>
                         <RiInformationLine/>
-                    </span>
+                        </span>
                     </div>
                 </InfoIcons>
-                <h4>{title}</h4>
+                <h4 style={{fontStyle: "italic"}}>{title}</h4>
                 <InfoDetail>
                     <span>
                     {adult ? "청소년 관람 불가능" : "청소년 관람 가능"}
                     </span>
                     <span>
-                    {releaseDate}
+                    {releaseDate.slice(0,4)}
                     </span>
                 </InfoDetail>
                 </Info>
             </Wrap>
+      </AnimatePresence>
+        
 
     )
 }

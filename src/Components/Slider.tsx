@@ -1,10 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { IMovie } from "../api";
 import {BiArrowFromRight, BiArrowFromLeft} from 'react-icons/bi'
 import { useQuery } from "react-query";
 import Box from "./Box"
+import { makeImagePath } from "../utils";
+import { useMatch, useNavigate } from "react-router-dom";
 
 const SliderWrap = styled.div`
 margin-top: 10px;
@@ -27,16 +29,49 @@ const Row = styled(motion.div)<{offset: number}>`
 const Prev = styled(motion.button)`
   position: absolute ;
   background:rgba(0,0,0,0);
-  height:18vh;
+  height:200px;
   font-size:40px;
   color: white;
-  z-index: 1;
   overflow:none ;
 `
 const Next = styled(Prev)`
     right:0;
 
 `
+
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  opacity: 0;
+  z-index: 0;
+`;
+
+const BigMovie = styled(motion.div)`
+  position: fixed;
+  width: 40vw;
+  height: 40vh;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  z-index: 1;
+`;
+const BigCover = styled.div`
+  width: 100%;
+  background-size: cover;
+  height: 400px;
+  border-radius: 15px;
+  background-color: ${(props) => props.theme.black.lighter};
+`;
+
+const BigTitle = styled.h3`
+`;
+
+const BigOverview = styled.p`
+`;
+
 
 const rowVariants = {
     hidden: (back:boolean)=> ({
@@ -53,9 +88,10 @@ const rowVariants = {
 
 interface SlidersProps {
   title?: string;
-  movieData: IMovie[];
+  data: IMovie[];
+  dataNum : string;
 }
-function Slider({title, movieData }: SlidersProps) {
+function Slider({title, data, dataNum }: SlidersProps) {
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
     const [back, setBack] = useState(false);
@@ -77,10 +113,10 @@ function Slider({title, movieData }: SlidersProps) {
     }, [])
 
   const increaseIndex = () => {
-    if (movieData) {
+    if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = movieData.length;
+      const totalMovies = data.length;
       const maxIndex = Math.floor(totalMovies / offset);
       setBack(false);
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
@@ -89,18 +125,19 @@ function Slider({title, movieData }: SlidersProps) {
   const toggleLeaving = () => setLeaving((prev) => !prev);
     
   const decreaseIndex = () =>{
-      if (movieData) {
+      if (data) {
         if (leaving) return;
         toggleLeaving();
-        const totalMovies = movieData.length - 1;
+        const totalMovies = data.length - 1;
         const maxIndex = Math.floor(totalMovies / offset) - 1;
         setBack(true);
         setIndex((prev) => (prev === 0 ? maxIndex :prev -1 ));
     }
   }
-
+  
     return (
-        <SliderWrap>
+      <>
+      <SliderWrap>
             <SliderTitle>
                 {title}
             </SliderTitle>
@@ -115,8 +152,7 @@ function Slider({title, movieData }: SlidersProps) {
                 key={index}
                 custom = {back}
                 >
-                    {movieData
-                    .slice(1)
+                    {data
                     .slice(offset * index, offset * index + offset)
                     .map((movie) => (
                         <Box
@@ -129,9 +165,15 @@ function Slider({title, movieData }: SlidersProps) {
             </Row>
             <Prev onClick = {increaseIndex} whileHover = {{scale:1.2}} key = "increase"><BiArrowFromRight /></Prev>
             <Next onClick = {decreaseIndex} whileHover = {{scale:1.2}} key = "decrease"><BiArrowFromLeft/></Next>
+            
             </AnimatePresence>
-
         </SliderWrap>
+          </>
+        
+            
+
+        
+        
         
     )
 }

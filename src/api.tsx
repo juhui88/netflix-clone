@@ -27,9 +27,19 @@ export interface IGetMoviesResult {
     id: number,
     name: string
 }
-export interface IGetGenres {
-    genres : IGenre[];
+export interface IGetMovieDetial {
+    adult: boolean,
+    genres : IGenre[],
+    id : number,
+    original_title : string,
+    overview: string,
+    backdrop_path: string,
+    runtime: number,
+    release_date:string,
+    tagline: string,
 }
+
+
 export function getNowPlayingMovies() {
   return axios.get(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&page=2`).then(res => res.data);
 }
@@ -42,7 +52,7 @@ export function getTopRatedMovies() {
 export function getUpcomingMovies() {
     return axios.get(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}`).then(res => res.data)
 }
-export function getMovie(movieId:string) {
+export function getMovie(movieId:number) {
     return axios.get(`${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}`).then(res => res.data);
 }
 

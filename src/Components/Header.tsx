@@ -102,6 +102,7 @@ function Header() {
     const [searchOpen, setSearchOpen] = useState(false);
     const homeMatch = useMatch("");
     const tvMatch = useMatch("tv");
+    const movieMatch = useMatch("movie");
 
     const navAnimation  = useAnimation();
     const toggleSearch = () => {
@@ -154,6 +155,12 @@ function Header() {
                             {homeMatch && <Circle layoutId = "circle" />}
                         </Link>
                         
+                    </Item>
+                    <Item>
+                        <Link to ="/movie">
+                            Movie
+                            {movieMatch && <Circle layoutId = "circle" />}
+                        </Link>
                     </Item>
                     <Item>
                         <Link to = "/tv">
