@@ -2,11 +2,11 @@ import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getMovie, IGetMovieDetial } from "../api";
-import { makeImagePath } from "../utils";
-import {RiMovieFill} from 'react-icons/ri'
+import { getMovie, IGetMovieDetial } from "../../api";
+import { makeImagePath } from "../../utils";
+import {BiFilm} from 'react-icons/bi'
 import { useRecoilValue } from "recoil";
-import { movieIdState } from "../atom";
+import { movieIdState } from "../../atom";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -26,6 +26,7 @@ const BigMovie = styled(motion.div)`
   right: 0;
   margin: 10px auto 10px auto;
   z-index:2;
+  border-radius: 15px ;
   background-color: rgb(20, 20, 20);
 `;
 const BigCover = styled.div`
@@ -83,12 +84,12 @@ const BigWrap = styled.div`
     grid-template-columns:2fr 1fr ;
 `
 
-function Detail() {
-    const movieId = useRecoilValue(movieIdState)
+function MovieDetail() {
+    const id = useRecoilValue(movieIdState)
     const navigate = useNavigate();
     const onOverlayClick = () => navigate("/movie");
 
-    const {data, isLoading} = useQuery<IGetMovieDetial>(["detailMoive", movieId], () => getMovie(movieId))
+    const {data, isLoading} = useQuery<IGetMovieDetial>(["detailMoive", id], () => getMovie(id))
     return (
         <AnimatePresence>
             {isLoading? null :
@@ -111,7 +112,7 @@ function Detail() {
                     <BigInfo>
                         <BigInfoOne style = {{display:"flex"}}>
                             <BigRelease>{data?.release_date.slice(0,4)}</BigRelease>
-                            <p><RiMovieFill/></p>
+                            <p><BiFilm/></p>
                             <BigRuntime> runtime: {data?.runtime}m </BigRuntime>
                         </BigInfoOne>
                         
@@ -138,4 +139,4 @@ function Detail() {
     )
 }
 
-export default Detail;
+export default MovieDetail;

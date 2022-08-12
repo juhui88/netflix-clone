@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { getNowPlayingMovies, getPopularMovies, getTopRatedMovies, getUpcomingMovies, IGetMoviesResult } from "../api";
 import { makeImagePath } from "../utils";
 import { Route, Routes, useNavigate } from "react-router-dom";
-import Slider from "../Components/Slider";
+import MovieSlider from "../Components/Movie/MovieSlider";
 import {RiInformationLine} from 'react-icons/ri'
 import { useRecoilState, } from "recoil";
 import {movieIdState } from "../atom";
-import Detail from "../Components/Detail";
+import MovieDetail from "../Components/Movie/MovieDetail";
 
 const Wrapper = styled.div`
     background: black;
@@ -73,9 +73,9 @@ function Movie() {
     navigate(`${movieId}`);
     setMovieId(movieId);
   };
-
+  const loading = nowPlayingLoading && popularLoding && topRatedLoading && upcomingLoading;
   return (
-    <Wrapper>{nowPlayingLoading? <Loader>Loading...</Loader> : 
+    <Wrapper>{loading? <Loader>Loading...</Loader> : 
     <>
       <Bannner bgphoto = {makeImagePath(nowPlayingData?.results.slice(-1)[0].backdrop_path || "")}>
         <Title>{nowPlayingData?.results.slice(-1)[0].title}</Title>
@@ -86,27 +86,23 @@ function Movie() {
         </DetailBtn>
       </Bannner>
       <Sliders>
-        <Slider
-        dataNum = "0"
+        <MovieSlider
         title="Now Playing Movies"
         data={nowPlayingData?.results ?? []}/>
-        <Slider
-        dataNum = "1"
+        <MovieSlider
         title="Popular Movies"
         data={popularData?.results ?? []}/>
-        <Slider 
-        dataNum = "2"
+        <MovieSlider 
         title="Top Rated Movies"
         data={topRatedData?.results ?? []}/>
-        <Slider
-        dataNum = "3"
+        <MovieSlider
         title="Upcoming Movies"
         data={upcomingData?.results ?? []}/>
       </Sliders>
     </>
     }
     <Routes>
-      <Route path = {`${movieId}`} element = {<Detail/>}/>
+      <Route path = {`${movieId}`} element = {<MovieDetail/>}/>
     </Routes>
     </Wrapper>
   );

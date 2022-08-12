@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
-import { makeImagePath } from "../utils";
+import { makeImagePath } from "../../utils";
 import {RiPlayCircleLine, RiInformationLine} from 'react-icons/ri'
 import {TbThumbUp} from 'react-icons/tb'
 import {TiHeartFullOutline} from 'react-icons/ti'
 import { useNavigate } from "react-router-dom";
-import {movieIdState } from "../atom";
+import {movieIdState, TvIdState } from "../../atom";
 import { useRecoilState } from "recoil";
 
 
@@ -89,16 +89,15 @@ interface IBox {
     id : number,
     backdropPath : string,
     title: string,
-    adult: boolean,
-    releaseDate: string
+    firstAirDate: string
 }
-function Box({id, backdropPath, title, adult, releaseDate} : IBox) {
-    const [MId,setMId] = useRecoilState(movieIdState)
+function TvBox({id, backdropPath, title, firstAirDate} : IBox) {
+    const [tvId,setTvId] = useRecoilState(TvIdState)
     
     const navigate = useNavigate();
-    const onInfoClicked = (movieId: number) => {
-        navigate(`${movieId}`);
-        setMId(movieId);
+    const onInfoClicked = (tvId: number) => {
+        navigate(`${tvId}`);
+        setTvId(tvId);
       };
     return (
       <AnimatePresence>
@@ -134,10 +133,7 @@ function Box({id, backdropPath, title, adult, releaseDate} : IBox) {
                 <h4 style={{fontStyle: "italic"}}>{title}</h4>
                 <InfoDetail>
                     <span>
-                    {adult ? "청소년 관람 불가능" : "청소년 관람 가능"}
-                    </span>
-                    <span>
-                    {releaseDate.slice(0,4)}
+                    {firstAirDate.slice(0,4)}
                     </span>
                 </InfoDetail>
                 </Info>
@@ -148,4 +144,4 @@ function Box({id, backdropPath, title, adult, releaseDate} : IBox) {
     )
 }
 
-export default Box;
+export default TvBox;

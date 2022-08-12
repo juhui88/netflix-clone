@@ -1,12 +1,9 @@
-import { AnimatePresence, motion, useViewportScroll } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { IMovie } from "../api";
+import { IMovie } from "../../api";
 import {BiArrowFromRight, BiArrowFromLeft} from 'react-icons/bi'
-import { useQuery } from "react-query";
-import Box from "./Box"
-import { makeImagePath } from "../utils";
-import { useMatch, useNavigate } from "react-router-dom";
+import MovieBox from "./MovieBox"
 
 const SliderWrap = styled.div`
 margin-top: 10px;
@@ -89,9 +86,8 @@ const rowVariants = {
 interface SlidersProps {
   title?: string;
   data: IMovie[];
-  dataNum : string;
 }
-function Slider({title, data, dataNum }: SlidersProps) {
+function MovieSlider({title, data }: SlidersProps) {
     const [index, setIndex] = useState(0);
     const [leaving, setLeaving] = useState(false);
     const [back, setBack] = useState(false);
@@ -155,7 +151,7 @@ function Slider({title, data, dataNum }: SlidersProps) {
                     {data
                     .slice(offset * index, offset * index + offset)
                     .map((movie) => (
-                        <Box
+                        <MovieBox
                         id = {movie.id}
                         backdropPath = {movie.backdrop_path}
                         title = {movie.title}
@@ -178,4 +174,4 @@ function Slider({title, data, dataNum }: SlidersProps) {
     )
 }
 
-export default Slider;
+export default MovieSlider;
